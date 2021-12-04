@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CommandRequest;
+use App\Http\Resources\CommandResource;
 use App\Models\Commande;
+use Illuminate\Console\Command;
 use Illuminate\Http\Request;
 
 class CommandeController extends Controller
@@ -15,7 +18,7 @@ class CommandeController extends Controller
      */
     public function index()
     {
-        //
+        return CommandResource::collection(Commande::all());
     }
 
     /**
@@ -24,9 +27,14 @@ class CommandeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CommandRequest $request)
     {
         //
+        $commande=Commande::create($request->validated());
+        return response()->json([
+            'message'=>'command is store',
+            'commande'=>$commande
+        ]);
     }
 
     /**
@@ -35,9 +43,10 @@ class CommandeController extends Controller
      * @param  \App\Models\Commande  $commande
      * @return \Illuminate\Http\Response
      */
-    public function show(Commande $commande)
+    public function show(string $userdeid,string $eventdeid)
     {
-        //
+        $commande=Commande::where('user_id',$userdeid)->where('event_id',$eventdeid)->first();
+        return new CommandResource($commande);
     }
 
     /**
@@ -47,9 +56,11 @@ class CommandeController extends Controller
      * @param  \App\Models\Commande  $commande
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Commande $commande)
+    public function update(CommandRequest $request, string $userdeid,string $eventdeid)
     {
-        //
+        Commande::where('user_id',$userdeid)->where('event_id',$eventdeid)->update(['qte'=>$request->qte]);
+        // $commande->update($request->validated());
+        return new CommandResource($request);
     }
 
     /**
@@ -58,8 +69,12 @@ class CommandeController extends Controller
      * @param  \App\Models\Commande  $commande
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Commande $commande)
+    public function destroy( string $userdeid,string $eventdeid)
     {
-        //
+        Commande::where('user_id',$userdeid)->where('event_id',$eventdeid)->delete();
+        // $commande->delete();
+        return response()->json([
+            'message'=>'commande is deleted'
+        ]);
     }
 }
