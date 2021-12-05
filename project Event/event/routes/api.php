@@ -26,11 +26,26 @@ Route::prefix('auth')->group(function () {
         Route::post('log_out',[AuthController::class,'logout'])->name('logout');
         Route::resource('Event', EventController::class);
         Route::resource('Commande', CommandeController::class);
-        Route::get('Commande/{id_user}/{id_event}', [CommandeController::class,'show']);
-        Route::post('Commande/{id_user}/{id_event}', [CommandeController::class,'update']);
-        Route::delete('Commande/{id_user}/{id_event}', [CommandeController::class,'destroy']);
+        
+        Route::prefix('Commande/{id_user}/{id_event}')->group(function () {
+        Route::get('/', [CommandeController::class,'show'])->name('cemmande.show');
+        Route::post('/', [CommandeController::class,'update'])->name('commande.add');
+        Route::delete('/', [CommandeController::class,'destroy'])->name('commande.delete');
+        });
+
+        Route::prefix('Event/evalu')->group(function () {
+        Route::get('/show-moyenne/{event_id}', [EventController::class,'showevalu_event_moy'])->name('evalu.moy');
+        Route::get('/{event_id}', [EventController::class,'showevalu_event'])->name('evalu.show');
+        Route::get('/{event_id}/{user_id}', [EventController::class,'showevalu_user'])->name('evalu.show_user');
+        Route::post('/', [EventController::class,'evalu'])->name('evalu.add');
+        Route::post('/{event_id}/{user_id}', [EventController::class,'evalu_update'])->name('evalu.update');
+        Route::delete('/{event_id}/{user_id}', [EventController::class,'evalu_delete'])->name('evalu.delete');
 
 
+
+            
+        });
+        // eval route 
         
         Route::resource('Event', EventController::class);
 

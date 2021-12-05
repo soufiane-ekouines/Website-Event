@@ -19,11 +19,8 @@ class CreateEvalusTable extends Migration
             $table->primary(['user_id','event_id']);
             $table->integer('qte');
             $table->timestamps();
-
-
             $table->foreignIdFor(User::class);
             $table->foreignIdFor(Event::class);
-
             // $table->foreign('user_id')->references('id')->on('users');
             // $table->foreign('event_id')->references('id')->on('events');
         });

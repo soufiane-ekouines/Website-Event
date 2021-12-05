@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\EvaluRequest;
 use App\Http\Requests\EventRequest;
 use App\Http\Resources\EventResource;
+use App\Models\Evalu;
 use App\Models\Event;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -84,6 +86,55 @@ class EventController extends Controller
         $event=Event::where('id',$eventid)->delete();
         return response()->json([
             'message'=>'Event is deleted'
+        ]);
+    }
+
+//update eval
+    public function evalu_update(EvaluRequest $request,string $userdeid,string $eventdeid)
+    {
+        $evalu=Evalu::where('user_id',$userdeid)->where('event_id',$eventdeid)->first();
+        $evalu->update($request->validated());
+        return response()->json([
+            'message'=>'eval is updated'
+        ]);
+    }
+    //delete eval
+    public function evalu_delet(string $userdeid,string $eventdeid)
+    {
+        $evalu=Evalu::where('user_id',$userdeid)->where('event_id',$eventdeid)->first();
+        $evalu->delete();
+        return response()->json([
+            'message'=>'eval is deleted'
+        ]);
+    }
+//return moyenne eval
+    public function showevalu_event_moy(string $eventdeid)
+    {
+        $evalu=Evalu::where('event_id',$eventdeid)->all();
+        $moy=$evalu->avg('qte');
+        return response()->json([
+            'moy'=>$moy
+        ]);
+    }
+//return  eval from event
+    public function showevalu_event(string $eventdeid)
+    {
+        $evalu=Evalu::where('event_id',$eventdeid)->all();
+        return EventResource::collection($evalu);
+    }
+//return eval from user
+    public function showevalu_user(string $userdeid,string $eventdeid)
+    {
+        $evalu=Evalu::where('user_id',$userdeid)->where('event_id',$eventdeid)->first();
+        return EventResource::collection($evalu);
+    }
+//create evalu 
+    
+    public function evalu(EvaluRequest $request)
+    {
+        Evalu::create($request->validated());
+        return response()->json([
+            'message'=>'evalu is created'
         ]);
     }
 }
