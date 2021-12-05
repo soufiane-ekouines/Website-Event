@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CommandRequest;
 use App\Http\Resources\CommandResource;
 use App\Models\Commande;
+use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Http\Request;
 
@@ -53,11 +54,14 @@ class CommandeController extends Controller
     //commande from event
     public function cmd_event(string $eventdeid)
     {
-        // $commande=Commande::where('event_id',$eventdeid)->get();
-        // return CommandResource::collection($commande);
-        return response()->json([
-            'message'=>'hiw'
-        ]);
+        $commande=Commande::where('event_id',$eventdeid)->get();
+        $users=User::join('commandes','users.id','=','commandes.user_id')
+                    ->join('events','events.id','=','commandes.event_id')
+                    ->where('events.id','=',$eventdeid)->get();
+        return CommandResource::collection($users);
+        // return response()->json([
+        //     'message'=>'hiw'
+        // ]);
     }
 
      //commande from event
