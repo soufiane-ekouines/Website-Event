@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Evalu extends Model
 {
     use HasFactory;
+    protected $fillable=['user_id','event_id','qte'];
+
 }

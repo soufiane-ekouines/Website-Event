@@ -92,17 +92,16 @@ class EventController extends Controller
 //update eval
     public function evalu_update(EvaluRequest $request,string $userdeid,string $eventdeid)
     {
-        $evalu=Evalu::where('user_id',$userdeid)->where('event_id',$eventdeid)->first();
-        $evalu->update($request->validated());
+        $evalu=Evalu::where('user_id',$userdeid)->where('event_id',$eventdeid)->update($request->validated());
         return response()->json([
             'message'=>'eval is updated'
         ]);
     }
     //delete eval
-    public function evalu_delet(string $userdeid,string $eventdeid)
+    public function evalu_delete(string $userdeid,string $eventdeid)
     {
-        $evalu=Evalu::where('user_id',$userdeid)->where('event_id',$eventdeid)->first();
-        $evalu->delete();
+        $evalu=Evalu::where('user_id',$userdeid)->where('event_id',$eventdeid)->delete();
+        // $evalu->delete();
         return response()->json([
             'message'=>'eval is deleted'
         ]);
@@ -110,31 +109,41 @@ class EventController extends Controller
 //return moyenne eval
     public function showevalu_event_moy(string $eventdeid)
     {
-        $evalu=Evalu::where('event_id',$eventdeid)->all();
+        $evalu=Evalu::where('event_id',$eventdeid)->get();
         $moy=$evalu->avg('qte');
         return response()->json([
             'moy'=>$moy
         ]);
     }
+
 //return  eval from event
     public function showevalu_event(string $eventdeid)
     {
-        $evalu=Evalu::where('event_id',$eventdeid)->all();
+        $evalu=Evalu::where('event_id',$eventdeid)->get();
         return EventResource::collection($evalu);
     }
+
 //return eval from user
     public function showevalu_user(string $userdeid,string $eventdeid)
     {
-        $evalu=Evalu::where('user_id',$userdeid)->where('event_id',$eventdeid)->first();
+        $evalu=Evalu::where('user_id',$userdeid)->where('event_id',$eventdeid)->get();
         return EventResource::collection($evalu);
     }
+
 //create evalu 
-    
     public function evalu(EvaluRequest $request)
     {
+        if($user=User::where('id',$request->user_id)->exists())
+        {
+
         Evalu::create($request->validated());
         return response()->json([
             'message'=>'evalu is created'
         ]);
+        }
+        return response()->json([
+            'message'=>'user not exist'
+        ]);
     }
+
 }

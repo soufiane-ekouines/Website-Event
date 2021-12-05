@@ -49,6 +49,23 @@ class CommandeController extends Controller
         return new CommandResource($commande);
     }
 
+    
+    //commande from event
+    public function cmd_event(string $eventdeid)
+    {
+        // $commande=Commande::where('event_id',$eventdeid)->get();
+        // return CommandResource::collection($commande);
+        return response()->json([
+            'message'=>'hiw'
+        ]);
+    }
+
+     //commande from event
+    public function cmd_user(string $userdeid)
+    {
+        $commande=Commande::where('user_id',$userdeid)->get();
+        return new CommandResource($commande);
+    }
     /**
      * Update the specified resource in storage.
      *

@@ -26,12 +26,14 @@ Route::prefix('auth')->group(function () {
         Route::post('log_out',[AuthController::class,'logout'])->name('logout');
         Route::resource('Event', EventController::class);
         Route::resource('Commande', CommandeController::class);
-        
+
         Route::prefix('Commande/{id_user}/{id_event}')->group(function () {
         Route::get('/', [CommandeController::class,'show'])->name('cemmande.show');
         Route::post('/', [CommandeController::class,'update'])->name('commande.add');
         Route::delete('/', [CommandeController::class,'destroy'])->name('commande.delete');
         });
+        Route::get('Commande/event/{eventdeid}', [CommandeController::class,'cmd_event'])->name('cemmande.event');
+        Route::get('Commande/user/{id_user}', [CommandeController::class,'cmd_user'])->name('cemmande.user');
 
         Route::prefix('Event/evalu')->group(function () {
         Route::get('/show-moyenne/{event_id}', [EventController::class,'showevalu_event_moy'])->name('evalu.moy');
